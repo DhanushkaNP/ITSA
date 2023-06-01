@@ -1,0 +1,32 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+lib/
+dist/
+
+# Environment variables
+.env
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Logs
+logs/
+*.log
+
+# Build files
+build/
+dist/
+
+# Testing
+coverage/
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
