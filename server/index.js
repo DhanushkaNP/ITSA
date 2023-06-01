@@ -2,10 +2,11 @@ const express = require("express");
 const connectToDatabase = require("./db/mongoose");
 require("dotenv").config();
 const app = express();
-app.use(express.json());
-
+const userRouter = require("./routes/users");
 const port = process.env.PORT || 5000;
 
+app.use(express.json());
+app.use("/api/users", userRouter);
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -16,8 +17,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res, next) => res.send("Hello World!"));
-
 app.use((err, req, res, next) => {
   if (res.headerSent) {
     next(err);
@@ -25,6 +24,10 @@ app.use((err, req, res, next) => {
     res.status(err.code || 500);
     res.json({ message: err.message || "An unknown error occurred!" });
   }
+});
+
+app.get("/", (req, res, next) => {
+  res.send("Hello World!");
 });
 
 connectToDatabase()
