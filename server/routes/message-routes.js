@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const messageControllers = require("../controllers/message-controllers");
 
-router.get("/all", function (req, res, next) {
-  res.send("All messages");
-});
+router.get("/all", messageControllers.getAllMessages);
 
-router.post("/new", function (req, res, next) {
-  res.send("message received");
-});
+router.post("/new", messageControllers.createNewMessage);
 
 module.exports = router;
