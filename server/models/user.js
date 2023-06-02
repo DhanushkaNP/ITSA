@@ -22,11 +22,13 @@ const schema = new mongoose.Schema({
     required: true,
     maxlength: 15,
   },
+  tokens: [{ token: { type: String } }],
 });
 
 schema.pre("save", async (next) => {
   const user = this;
-  user.password = await bcrypt.hash(user.password, 8);
+  if (user.isModified("password"))
+    user.password = await bcrypt.hash(user.password, 8);
   next();
 });
 
@@ -40,8 +42,12 @@ schema.static.findByCredentials = async (email, password) => {
   return user;
 };
 
-schema.methods.generateAuthToken = () => {
+schema.methods.generateAuthToken = async () => {
+  const user = this;
   const token = jwt.sign({ _id: this._id, type: this.type }, jwtPrivateKey);
+  user.tokens = user.tokens.concat({ token });
+
+  await user.save();
   return token;
 };
 
