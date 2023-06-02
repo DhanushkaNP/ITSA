@@ -7,7 +7,17 @@ async function getAllEvents(req, res, next) {
 
 async function getEventById(req, res, next) {
   const eventId = req.params.eid;
-  res.send(eventId);
+
+  let foundEvent;
+  try {
+    foundEvent = await Event.findById(eventId);
+  } catch (err) {
+    return next(
+      new HttpError("Didn't found any event related to given id", 404)
+    );
+  }
+
+  res.status(200).json({ event: foundEvent.toObject({ getters: true }) });
 }
 
 async function createNewEvent(req, res, next) {
