@@ -2,6 +2,7 @@ const express = require("express");
 const connectToDatabase = require("./db/mongoose");
 require("dotenv").config();
 const app = express();
+app.use(express.json());
 const userRouter = require("./routes/users-routes");
 const eventRouter = require("./routes/events-routes");
 const memberRouter = require("./routes/members-routes");

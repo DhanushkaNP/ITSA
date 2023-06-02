@@ -1,24 +1,96 @@
+const HttpError = require("../../../../../Courses/Udemy courses/React, NodeJS, Express and MongoDB - The MERN Fullstack Guide/Main project file/share-places/BACKEND/models/http-error");
+const Event = require("../models/event");
+
 async function getAllEvents(req, res, next) {
-  res.send("All Events");
+  let events;
+  try {
+    events = await Event.find().sort({ _id: -1 });
+  } catch (err) {
+    return next(
+      new HttpError("Something went wrong when finding all events", 500)
+    );
+  }
+
+  if (events.length === 0) {
+    return next(new HttpError("Didn't found any event", 422));
+  }
+
+  res.status(200).json({ events });
 }
 
 async function getEventById(req, res, next) {
   const eventId = req.params.eid;
-  res.send(eventId);
+
+  let foundEvent;
+  try {
+    foundEvent = await Event.findById(eventId);
+  } catch (err) {
+    return next(
+      new HttpError("Didn't found any event related to given id", 404)
+    );
+  }
+
+  res.status(200).json({ event: foundEvent });
 }
 
 async function createNewEvent(req, res, next) {
-  res.send("Added new Event");
+  const image = "https://www.gstatic.com/webp/gallery/1.jpg";
+  const { title, date, description } = req.body;
+
+  const createdEvent = new Event({
+    title,
+    date: new Date(date),
+    description,
+    image,
+  });
+
+  try {
+    await createdEvent.save();
+  } catch (err) {
+    return next(new HttpError("Creating event failed", 500));
+  }
+  res.send("event created").status(200);
 }
 
 async function updateEvent(req, res, next) {
-  const EventId = req.params.eid;
-  res.send(`Event ${EventId} updated`);
+  const eventId = req.params.eid;
+  const { title, date, description } = req.body;
+
+  let foundEvent;
+  try {
+    foundEvent = await Event.findById(eventId);
+  } catch (err) {
+    return next(
+      new HttpError("Didn't found any event related to given id", 404)
+    );
+  }
+
+  foundEvent.title = title;
+  foundEvent.date = new Date(date);
+  foundEvent.description = description;
+
+  try {
+    foundEvent.save();
+  } catch (err) {
+    return next(
+      new HttpError("Didn't updat event,Something went wrong when saving", 500)
+    );
+  }
+  res.send(`Event ${eventId} updated`);
 }
 
 async function deleteEvent(req, res, next) {
-  const EventId = req.params.eid;
-  res.send(`Event ${EventId} deleted`);
+  const eventId = req.params.eid;
+
+  try {
+    await Event.findByIdAndDelete(eventId);
+  } catch (err) {
+    return next(
+      new HttpError("Something went wrong couldn't delete the event", 500)
+    );
+  }
+
+  res.status(200).send("Event deleted");
 }
 
 exports.getAllEvents = getAllEvents;
