@@ -6,6 +6,7 @@ const userRouter = require("./routes/users-routes");
 const eventRouter = require("./routes/events-routes");
 const memberRouter = require("./routes/members-routes");
 const blogRouter = require("./routes/blogs-routes");
+const messageRouter = require("./routes/message-routes");
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
@@ -23,6 +24,7 @@ app.use("/api/users", userRouter);
 app.use("/api/events", eventRouter);
 app.use("/api/members", memberRouter);
 app.use("/api/blogs", blogRouter);
+app.use("/api/messages", messageRouter);
 
 app.use((err, req, res, next) => {
   if (res.headerSent) {
