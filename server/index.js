@@ -7,6 +7,7 @@ const eventRouter = require("./routes/events-routes");
 const memberRouter = require("./routes/members-routes");
 const blogRouter = require("./routes/blogs-routes");
 const messageRouter = require("./routes/message-routes");
+const User = require("./models/user");
 const port = process.env.PORT || 5000;
 
 app.use(express.json());

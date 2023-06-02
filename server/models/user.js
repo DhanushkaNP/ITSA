@@ -25,14 +25,14 @@ const schema = new mongoose.Schema({
   tokens: [{ token: { type: String } }],
 });
 
-schema.pre("save", async (next) => {
+schema.pre("save", async function (next) {
   const user = this;
   if (user.isModified("password"))
     user.password = await bcrypt.hash(user.password, 8);
   next();
 });
 
-schema.static.findByCredentials = async (email, password) => {
+schema.statics.findByCredentials = async function (email, password) {
   const user = await User.findOne({ email });
   if (!user) return new Error();
 
@@ -42,7 +42,7 @@ schema.static.findByCredentials = async (email, password) => {
   return user;
 };
 
-schema.methods.generateAuthToken = async () => {
+schema.methods.generateAuthToken = async function () {
   const user = this;
   const token = jwt.sign({ _id: this._id, type: this.type }, jwtPrivateKey);
   user.tokens = user.tokens.concat({ token });

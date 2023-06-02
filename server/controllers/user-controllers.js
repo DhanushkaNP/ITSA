@@ -3,8 +3,11 @@ const { tokenHeader } = require("../config.json");
 
 async function userLogin(req, res, next) {
   try {
-    const user = await User.findByCredetials(req.body.email, req.body.password);
-    const token = user.generateAuthToken();
+    const user = await User.findByCredentials(
+      req.body.email,
+      req.body.password
+    );
+    const token = await user.generateAuthToken();
     res.status(200).json({ token, user });
   } catch (error) {
     res.status(401).send("Invalid email or password!");
