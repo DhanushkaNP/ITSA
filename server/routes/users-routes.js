@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const userControllers = require("../controllers/user-controllers");
 
-router.post("/login", async (req, res) => {
-  res.send("User logged in.");
-});
+router.post("/login", userControllers.userLogin);
 
-router.post("/logout", async (req, res) => {
-  res.send("User logged out.");
-});
+router.post("/logout", userControllers.userLogout);
 
 module.exports = router;
