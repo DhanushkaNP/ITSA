@@ -4,6 +4,7 @@ require("dotenv").config();
 const app = express();
 const userRouter = require("./routes/users-routes");
 const eventRouter = require("./routes/events-routes");
+const memberRouter = require("./routes/members-routes");
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
@@ -19,6 +20,8 @@ app.use((req, res, next) => {
 
 app.use("/api/users", userRouter);
 app.use("/api/events", eventRouter);
+app.use("/api/members", memberRouter);
+
 app.use((err, req, res, next) => {
   if (res.headerSent) {
     next(err);
