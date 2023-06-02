@@ -1,22 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const memberControllers = require("../controllers/members-controllers");
 
-router.get("/all", function (req, res, next) {
-  res.send("All members");
-});
+router.get("/all", memberControllers.getAllMembers);
 
-router.post("/new", function (req, res, next) {
-  res.send("New member added");
-});
+router.post("/new", memberControllers.createNewMember);
 
-router.patch("/:mid", function (req, res, next) {
-  const memberId = req.params.mid;
-  res.send(`member ${memberId} updated`);
-});
+router.patch("/:mid", memberControllers.updateMember);
 
-router.delete("/:mid", function (req, res, next) {
-  const memberId = req.params.mid;
-  res.send(`member ${memberId} deleted`);
-});
+router.delete("/:mid", memberControllers.deleteMember);
 
 module.exports = router;
