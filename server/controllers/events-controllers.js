@@ -2,7 +2,20 @@ const HttpError = require("../../../../../Courses/Udemy courses/React, NodeJS, E
 const Event = require("../models/event");
 
 async function getAllEvents(req, res, next) {
-  res.send("All Events");
+  let events;
+  try {
+    events = await Event.find().sort({ _id: -1 });
+  } catch (err) {
+    return next(
+      new HttpError("Something went wrong when finding all events", 500)
+    );
+  }
+
+  if (events.length === 0) {
+    return next(new HttpError("Didn't found any event", 422));
+  }
+
+  res.status(200).json({ events });
 }
 
 async function getEventById(req, res, next) {
@@ -17,7 +30,7 @@ async function getEventById(req, res, next) {
     );
   }
 
-  res.status(200).json({ event: foundEvent.toObject({ getters: true }) });
+  res.status(200).json({ event: foundEvent });
 }
 
 async function createNewEvent(req, res, next) {
