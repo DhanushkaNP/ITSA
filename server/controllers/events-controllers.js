@@ -1,4 +1,4 @@
-const HttpError = require("../../../../../Courses/Udemy courses/React, NodeJS, Express and MongoDB - The MERN Fullstack Guide/Main project file/share-places/BACKEND/models/http-error");
+const HttpError = require("../util/http-Error");
 const Event = require("../models/event");
 
 async function getAllEvents(req, res, next) {

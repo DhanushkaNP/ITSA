@@ -18,8 +18,8 @@ async function userLogout(req, res, next) {
   try {
     const token = req.header(tokenHeader);
     const user = await User.findOneAndUpdate(
-      { tokens: { $in: [token] } },
-      { $pull: { tokens: token } },
+      { "tokens.token": token },
+      { $pull: { tokens: { token } } },
       { new: true }
     );
     if (!user) return res.status(404).send("User or token not found");
