@@ -30,7 +30,7 @@ async function getEventById(req, res, next) {
     );
   }
 
-  res.status(200).json({ event: foundEvent.toObject({ getters: true }) });
+  res.status(200).json({ event: foundEvent });
 }
 
 async function createNewEvent(req, res, next) {
