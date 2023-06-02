@@ -2,11 +2,11 @@ const express = require("express");
 const connectToDatabase = require("./db/mongoose");
 require("dotenv").config();
 const app = express();
-const userRouter = require("./routes/users");
+const userRouter = require("./routes/users-routes");
+const eventRouter = require("./routes/events-routes");
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
-app.use("/api/users", userRouter);
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -17,6 +17,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/api/users", userRouter);
+app.use("/api/events", eventRouter);
 app.use((err, req, res, next) => {
   if (res.headerSent) {
     next(err);
