@@ -80,8 +80,17 @@ async function updateEvent(req, res, next) {
 }
 
 async function deleteEvent(req, res, next) {
-  const EventId = req.params.eid;
-  res.status(200).send("Event updated");
+  const eventId = req.params.eid;
+
+  try {
+    await Event.findByIdAndDelete(eventId);
+  } catch (err) {
+    return next(
+      new HttpError("Something went wrong couldn't delete the event", 500)
+    );
+  }
+
+  res.status(200).send("Event deleted");
 }
 
 exports.getAllEvents = getAllEvents;
