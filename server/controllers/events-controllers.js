@@ -22,7 +22,7 @@ async function createNewEvent(req, res, next) {
   });
 
   try {
-    createdEvent.save();
+    await createdEvent.save();
   } catch (err) {
     return next(new HttpError("Creating event failed", 500));
   }
@@ -30,13 +30,35 @@ async function createNewEvent(req, res, next) {
 }
 
 async function updateEvent(req, res, next) {
-  const EventId = req.params.eid;
-  res.send(`Event ${EventId} updated`);
+  const eventId = req.params.eid;
+  const { title, date, description } = req.body;
+
+  let foundEvent;
+  try {
+    foundEvent = await Event.findById(eventId);
+  } catch (err) {
+    return next(
+      new HttpError("Didn't found any event related to given id", 404)
+    );
+  }
+
+  foundEvent.title = title;
+  foundEvent.date = new Date(date);
+  foundEvent.description = description;
+
+  try {
+    foundEvent.save();
+  } catch (err) {
+    return next(
+      new HttpError("Didn't updat event,Something went wrong when saving", 500)
+    );
+  }
+  res.send(`Event ${eventId} updated`);
 }
 
 async function deleteEvent(req, res, next) {
   const EventId = req.params.eid;
-  res.send(`Event ${EventId} deleted`);
+  res.status(200).send("Event updated");
 }
 
 exports.getAllEvents = getAllEvents;
