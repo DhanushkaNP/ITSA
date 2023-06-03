@@ -32,6 +32,16 @@ schema.pre("save", async function (next) {
   next();
 });
 
+schema.pre("findOneAndUpdate", async function (next) {
+  const update = this._update;
+  if (update.password) {
+    const hashedPassword = await bcrypt.hash(update.password, 8);
+    this._update.password = hashedPassword;
+    next();
+  }
+  next();
+});
+
 schema.statics.findByCredentials = async function (email, password) {
   const user = await User.findOne({ email });
   if (!user) return new Error();
