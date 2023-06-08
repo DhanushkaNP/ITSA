@@ -1,6 +1,6 @@
 const HttpError = require("../util/http-Error");
 const Event = require("../models/event");
-const { eventAddAuthSchema } = require("../util/validator");
+const { eventAuthSchema } = require("../util/validator");
 
 async function getAllEvents(req, res, next) {
   let events;
@@ -39,7 +39,8 @@ async function createNewEvent(req, res, next) {
 
   let result;
   try {
-    result = await eventAddAuthSchema.validateAsync(req.body);
+    result = await eventAuthSchema.validateAsync(req.body);
+    console.log(result);
   } catch (err) {
     if (err.isJoi === true) err.status = 422;
     return next(
