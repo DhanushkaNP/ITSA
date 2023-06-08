@@ -49,7 +49,7 @@ async function createNewEvent(req, res, next) {
   } catch (err) {
     return next(new HttpError("Creating event failed", 500));
   }
-  res.send("event created").status(200);
+  res.send("event created").status(201);
 }
 
 async function updateEvent(req, res, next) {
