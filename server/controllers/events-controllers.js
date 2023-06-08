@@ -40,7 +40,6 @@ async function createNewEvent(req, res, next) {
   let result;
   try {
     result = await eventAuthSchema.validateAsync(req.body);
-    console.log(result);
   } catch (err) {
     if (err.isJoi === true) err.status = 422;
     return next(
@@ -67,7 +66,17 @@ async function createNewEvent(req, res, next) {
 
 async function updateEvent(req, res, next) {
   const eventId = req.params.eid;
-  const { title, date, description } = req.body;
+
+  let result;
+  try {
+    result = await eventAuthSchema.validateAsync(req.body);
+  } catch (err) {
+    if (err.isJoi === true) err.status = 422;
+    return next(
+      new HttpError(err.message || "Validation failed", err.status || 401)
+    );
+  }
+  const { title, date, description } = result;
 
   let foundEvent;
   try {
