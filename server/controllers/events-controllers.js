@@ -1,5 +1,6 @@
 const HttpError = require("../util/http-Error");
 const Event = require("../models/event");
+const { eventAddAuthSchema } = require("../util/validator");
 
 async function getAllEvents(req, res, next) {
   let events;
@@ -35,7 +36,18 @@ async function getEventById(req, res, next) {
 
 async function createNewEvent(req, res, next) {
   const image = "https://www.gstatic.com/webp/gallery/1.jpg";
-  const { title, date, description } = req.body;
+
+  let result;
+  try {
+    result = await eventAddAuthSchema.validateAsync(req.body);
+  } catch (err) {
+    if (err.isJoi === true) err.status = 422;
+    return next(
+      new HttpError(err.message || "Validation failed", err.status || 401)
+    );
+  }
+
+  const { title, date, description } = result;
 
   const createdEvent = new Event({
     title,
