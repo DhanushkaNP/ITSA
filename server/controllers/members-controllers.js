@@ -1,9 +1,28 @@
+const Member = require("../models/member");
+const HttpError = require("../util/http-Error");
+
 async function getAllMembers(req, res, next) {
   res.send("All Members");
 }
 
 async function createNewMember(req, res, next) {
-  res.send("Added new Member");
+  const image = "https://www.gstatic.com/webp/gallery3/2_webp_ll.png";
+
+  const { name, position, description } = req.body;
+
+  const createdMember = new Member({
+    name,
+    position,
+    description,
+    image,
+  });
+
+  try {
+    await createdMember.save();
+  } catch (err) {
+    return next(new HttpError("Creating member failed", 500));
+  }
+  res.send("member created").status(201);
 }
 
 async function updateMember(req, res, next) {
