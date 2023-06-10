@@ -2,7 +2,15 @@ const Message = require("../models/message");
 const HttpError = require("../util/http-Error");
 
 async function getAllMessages(req, res, next) {
-  res.send("All Messages");
+  let allMessage;
+  try {
+    allMessage = await Message.find().sort({ _id: -1 });
+  } catch (err) {
+    return next(
+      new HttpError("Something went wrong when finding all messages", 500)
+    );
+  }
+  res.status(200).json({ allMessage });
 }
 
 async function createNewMessage(req, res, next) {
