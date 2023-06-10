@@ -70,7 +70,16 @@ async function updateMember(req, res, next) {
 
 async function deleteMember(req, res, next) {
   const memberId = req.params.mid;
-  res.send(`member ${memberId} deleted`);
+
+  try {
+    await Member.findByIdAndDelete(memberId);
+  } catch (err) {
+    return next(
+      new HttpError("Something went wrong, couldn't delete the member", 500)
+    );
+  }
+
+  res.status(200).send("Member deleted");
 }
 
 exports.getAllMembers = getAllMembers;
