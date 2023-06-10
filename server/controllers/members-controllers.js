@@ -40,7 +40,32 @@ async function createNewMember(req, res, next) {
 
 async function updateMember(req, res, next) {
   const memberId = req.params.mid;
-  res.send(`member ${memberId} updated`);
+  const { name, position, description } = req.body;
+
+  let foundMember;
+  try {
+    foundMember = await Member.findById(memberId);
+  } catch (err) {
+    return next(
+      new HttpError("Didn't found any member related to given id", 404)
+    );
+  }
+
+  foundMember.name = name;
+  foundMember.position = position;
+  foundMember.description = description;
+
+  try {
+    foundMember.save();
+  } catch (err) {
+    return next(
+      new HttpError(
+        "Couldn't update member,Something went wrong when saving",
+        500
+      )
+    );
+  }
+  res.send(`member ${memberId} updated`).status(200);
 }
 
 async function deleteMember(req, res, next) {
