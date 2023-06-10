@@ -98,7 +98,7 @@ async function updateEvent(req, res, next) {
       new HttpError("Didn't updat event,Something went wrong when saving", 500)
     );
   }
-  res.send(`Event ${eventId} updated`);
+  res.send(`Event ${eventId} updated`).status(200);
 }
 
 async function deleteEvent(req, res, next) {
