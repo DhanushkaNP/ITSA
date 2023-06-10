@@ -2,7 +2,20 @@ const Member = require("../models/member");
 const HttpError = require("../util/http-Error");
 
 async function getAllMembers(req, res, next) {
-  res.send("All Members");
+  let members;
+  try {
+    members = await Member.find();
+  } catch (err) {
+    return next(
+      new HttpError("Something went wrong when getting all members", 500)
+    );
+  }
+
+  if (members.length === 0) {
+    return next(new HttpError("Didn't found any member", 422));
+  }
+
+  res.status(200).json({ members });
 }
 
 async function createNewMember(req, res, next) {
