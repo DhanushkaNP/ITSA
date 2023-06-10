@@ -1,5 +1,6 @@
 const Member = require("../models/member");
 const HttpError = require("../util/http-Error");
+const { memberAuthSchema } = require("../util/validator");
 
 async function getAllMembers(req, res, next) {
   let members;
@@ -21,12 +22,21 @@ async function getAllMembers(req, res, next) {
 async function createNewMember(req, res, next) {
   const image = "https://www.gstatic.com/webp/gallery3/2_webp_ll.png";
 
-  const { name, position, description } = req.body;
+  let result;
+  try {
+    result = await memberAuthSchema.validateAsync(req.body);
+  } catch (err) {
+    if (err.isJoi === true) err.status = 422;
+    return next(
+      new HttpError(
+        err.message || "Member Validation failed",
+        err.status || 401
+      )
+    );
+  }
 
   const createdMember = new Member({
-    name,
-    position,
-    description,
+    ...result,
     image,
   });
 
@@ -40,7 +50,21 @@ async function createNewMember(req, res, next) {
 
 async function updateMember(req, res, next) {
   const memberId = req.params.mid;
-  const { name, position, description } = req.body;
+
+  let result;
+  try {
+    result = await memberAuthSchema.validateAsync(req.body);
+  } catch (err) {
+    if (err.isJoi === true) err.status = 422;
+    return next(
+      new HttpError(
+        err.message || "Member detail Validation failed",
+        err.status || 401
+      )
+    );
+  }
+
+  const { name, position, description } = result;
 
   let foundMember;
   try {
