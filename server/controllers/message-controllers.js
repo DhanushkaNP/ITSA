@@ -32,5 +32,23 @@ async function createNewMessage(req, res, next) {
   res.status(201).send("Message created");
 }
 
+async function deleteMessage(req, res, next) {
+  const messageId = req.params.mgId;
+  let message;
+  try {
+    message = await Message.findByIdAndDelete(messageId);
+  } catch (err) {
+    return next(
+      new HttpError(
+        "Something when went wrong, couldn't find any message realted to given id",
+        404
+      )
+    );
+  }
+
+  res.status(200).send("Message deleted");
+}
+
 exports.getAllMessages = getAllMessages;
 exports.createNewMessage = createNewMessage;
+exports.deleteMessage = deleteMessage;
