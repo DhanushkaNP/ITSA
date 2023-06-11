@@ -1,5 +1,6 @@
 const Message = require("../models/message");
 const HttpError = require("../util/http-Error");
+const { messageAuthSchema } = require("../util/validator");
 
 async function getAllMessages(req, res, next) {
   let allMessage;
@@ -14,14 +15,17 @@ async function getAllMessages(req, res, next) {
 }
 
 async function createNewMessage(req, res, next) {
-  const { name, email, phone, message } = req.body;
+  let result;
+  try {
+    result = await messageAuthSchema.validateAsync(req.body);
+  } catch (err) {
+    if (err.isJoi === true) err.status = 422;
+    return next(
+      new HttpError(err.message || "Validation failed", err.status || 401)
+    );
+  }
 
-  const newMessage = Message({
-    name,
-    email,
-    phone,
-    message,
-  });
+  const newMessage = Message(result);
 
   try {
     await newMessage.save();
