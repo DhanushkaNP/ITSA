@@ -6,4 +6,6 @@ router.get("/all", messageControllers.getAllMessages);
 
 router.post("/new", messageControllers.createNewMessage);
 
+router.delete("/:mgId", messageControllers.deleteMessage);
+
 module.exports = router;
